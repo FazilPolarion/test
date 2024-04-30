@@ -1,0 +1,61 @@
+###############################################################################
+##
+## com.polarion.alm.shared.api.transaction.ReadOnlyTransaction $transaction
+## com.polarion.alm.shared.api.model.plan.Plan $plan
+## com.polarion.alm.shared.api.model.project.Project $project
+## 
+
+#set($spaces = "&nbsp;&nbsp;&nbsp;")
+
+#set ($workItem = $object) 
+
+#set($wi = $transaction.workItems().getBy().oldApiObject($object))
+
+#set($wiProjectId = $wi.getReference().projectId())
+#set($wiProjectQuery = "project.id:($wiProjectId)")
+#set($wiId = $wi.getReference().id())
+#set($wiPath = $wi.getReference().toPath())
+
+
+###############################################################################
+##
+## Macros
+##
+## how to fetch a set of workitems ( by query) : NEW API :
+
+## HARDCODED, T.B.FIXED !!!!
+#set($baseUrl="http://localhost:81/")
+
+
+#set ($ServerUrl   = $workItem.getCustomField("jenkinsServerUrl"))
+#set ($BuildName   = $workItem.getCustomField("jenkinsBuildName"))
+#set ($BuildNumber = $workItem.getCustomField("jenkinsBuildNumber"))
+
+## the full URL must look like http://myjenkins:8080/jenkins/job/<jobName>/lastBuild/api/xml
+
+
+<!DOCTYPE html>
+<html>
+	#if($BuildName)
+	  <p><a href=$ServerUrl/job/$BuildName target="_blank">click here to jump to Jenkins</a></p>
+	  <body>
+
+ 	  #if(!$BuildNumber)
+		<iframe width="100%" height="500px" src=$ServerUrl/job/$BuildName  name="iframe_a"></iframe>
+	  #else
+		<iframe width="100%" height="500px" src=$ServerUrl/job/$BuildName/$BuildNumber  name="iframe_a"></iframe>
+		
+<!-- Show Allure Report
+		<iframe width="100%" height="20px" name="iframe_a" frameBorder="0"><br><br></iframe>
+		<iframe width="100%" height="500px" src=$ServerUrl/job/$BuildName/$BuildNumber/allure  name="iframe_a"></iframe>
+--> 
+	  #end	
+	#else
+		<p>No Build Name defined</p>
+	#end
+	</body>
+</html>
+
+
+
+
